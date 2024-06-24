@@ -1,35 +1,43 @@
-const express = require("express");
+import express from 'express'
+import trabajosRoutes from './src/routes/routes.js';
+import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
+import dotenv from 'dotenv';
 
+dotenv.config();
+
+const __dirname = process.cwd();
 const app = express();
+const port = process.env.PORT || 3000;
 
-const port = process.env.PORT || 3000
+// Middleware CORS
+app.use(cors({
+    origin: '*'
+}));
 
-app.get("/", (req, res) => {
-    const htmlResponse = `
-    <html>
-    <head>
-    <title>PELOTUDO</title>
-    </head>
-    <body>
-    <h1>fracasado</h1>
-    </body>
-    </html>`
-    res.send(htmlResponse)
-})
+// Middleware para manejar datos JSON
+app.use(express.json());
 
-app.get("/trabajos", (req, res) => {
-    const htmlHola = `
-    <html>
-    <head>
-    <title>Trabajos</title>
-    </head>
-    <body>
-    <h1>Entraste a trabajos</h1>
-    </body>
-    </html>`
-    res.send(htmlHola)
-})
+// Directorio de uploads
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
-app.listen(port, () => {
-    console.log(`port runing in ${port}`)
-})
+// Middleware para servir archivos estáticos desde /uploads
+app.use('/uploads', express.static(uploadDir));
+
+// Rutas de la aplicación
+app.use(trabajosRoutes);
+
+// Función principal para iniciar la aplicación
+async function main() {
+        app.listen(port, () => {
+            console.log(`Server is listening on port ${port}`);
+        });
+}
+
+main();
+
+export default app;
