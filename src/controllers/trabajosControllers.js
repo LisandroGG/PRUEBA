@@ -1,4 +1,4 @@
-export const funciona = async(req, res) => {
+export const funciona = (req, res) => {
 
     const htmlResponse = `
     <html>
