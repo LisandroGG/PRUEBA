@@ -10,5 +10,5 @@ export const funciona = (req, res) => {
     </body>
     </html>`
 
-    res.rend(htmlResponse)
+    res.send(htmlResponse)
 }
